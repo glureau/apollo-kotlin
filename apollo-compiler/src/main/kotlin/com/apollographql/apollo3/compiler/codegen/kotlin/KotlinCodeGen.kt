@@ -22,11 +22,11 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationVariablesAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.PaginationBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.TestBuildersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
-import com.apollographql.apollo3.compiler.maybeMakeNamesUnique
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.squareup.kotlinpoet.FileSpec
@@ -197,6 +197,10 @@ class KotlinCodeGen(
 
     if (generateSchema) {
       builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions))
+    }
+
+    if (ir.schema.paginationConnectionTypes.isNotEmpty()) {
+      builders.add(PaginationBuilder(context, ir.schema.paginationConnectionTypes))
     }
 
     /**

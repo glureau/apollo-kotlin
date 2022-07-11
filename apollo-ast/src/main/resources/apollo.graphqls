@@ -46,3 +46,6 @@ on FIELD_DEFINITION
 # Use this for instance when the name would clash with a reserved keyword or field in the generated code.
 # This directive is experimental.
 directive @targetName(name: String!) on ENUM_VALUE
+
+# This directive is experimental.
+directive @pagination(type: String! = "relay", fields: String! = "") on OBJECT | INTERFACE

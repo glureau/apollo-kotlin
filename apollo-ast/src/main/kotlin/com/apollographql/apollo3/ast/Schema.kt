@@ -29,6 +29,7 @@ class Schema internal constructor(
     private val keyFields: Map<String, Set<String>>,
     val foreignNames: Map<String, String>,
     private val directivesToStrip: List<String>,
+    val paginationConnectionTypes: Set<String>,
 ) {
   /**
    * Creates a new Schema from a list of definition.
@@ -42,7 +43,8 @@ class Schema internal constructor(
       definitions,
       emptyMap(),
       emptyMap(),
-      emptyList()
+      emptyList(),
+      emptySet(),
   )
 
   val typeDefinitions: Map<String, GQLTypeDefinition> = definitions
@@ -137,7 +139,8 @@ class Schema internal constructor(
         "sdl" to GQLDocument(definitions, null).toUtf8(),
         "keyFields" to keyFields,
         "foreignNames" to foreignNames,
-        "directivesToStrip" to directivesToStrip
+        "directivesToStrip" to directivesToStrip,
+        "paginationConnectionTypes" to paginationConnectionTypes.toList(),
     )
   }
 
@@ -201,6 +204,12 @@ class Schema internal constructor(
     @ApolloExperimental
     const val FIELD_POLICY_PAGINATION_ARGS = "paginationArgs"
 
+    @ApolloExperimental
+    const val PAGINATION = "pagination"
+
+    @ApolloExperimental
+    const val PAGINATION_FIELDS = "fields"
+
     /**
      * Parses the given [map] and creates a new [Schema].
      * The [map] must come from a previous call to [toMap] to make sure the schema is valid
@@ -213,6 +222,7 @@ class Schema internal constructor(
           keyFields = (map["keyFields"]!! as Map<String, Collection<String>>).mapValues { it.value.toSet() },
           foreignNames = map["foreignNames"]!! as Map<String, String>,
           directivesToStrip = map["directivesToStrip"]!! as List<String>,
+          paginationConnectionTypes = (map["paginationConnectionTypes"]!! as List<String>).toSet(),
       )
     }
   }
